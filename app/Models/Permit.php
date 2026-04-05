@@ -15,6 +15,13 @@ class Permit extends Model
         'request_by',
         'section',
         'work_date',
-        'description'
+        'description',
+
+        // workflow
+        'status',
+        'ptw_number',
+        'printed_at',
+        'issued_at',
+        'closed_at',
     ];
 }
