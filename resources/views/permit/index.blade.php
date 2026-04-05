@@ -21,23 +21,28 @@
     <tr>
         <th>No</th>
         <th>Permit Number</th>
+        <th>Permit Number</th>
         <th>Request By</th>
         <th>Section</th>
         <th>Work Date</th>
         <th>Description</th>
+        <th>Status</th>
         <th>Aksi</th>
+        
     </tr>
 
     @foreach($permits as $permit)
     <tr>
         <td>{{ $permits->firstItem() + $loop->index }}</td>
         <td>{{ $permit->permit_number }}</td>
+        <td>{{ $permit->ptw_number ?? '-' }}</td>
         <td>{{ $permit->request_by }}</td>
         <td>{{ $permit->section }}</td>
         <td>{{ $permit->work_date }}</td>
         <td>{{ $permit->description }}</td>
+        <td>{{ $permit->status }}</td>
         <td>
-            <button class="btn btn-sm btn-warning" type="button"
+            <button type="button"
                 onclick="window.location='{{ route('permits.edit', $permit->id) }}'">
                 Edit
             </button>
@@ -45,11 +50,29 @@
             <form action="{{ route('permits.destroy', $permit->id) }}" method="POST" style="display:inline;">
                 @csrf
                 @method('DELETE')
-                <button class="btn btn-sm btn-danger"
-                    onclick="return confirm('Yakin hapus?')">
-                    Hapus
-                </button>
+                <button onclick="return confirm('Yakin hapus?')">Hapus</button>
             </form>
+
+            @if ($permit->status === 'draft')
+                <form action="/permits/{{ $permit->id }}/submit" method="POST" style="display:inline;">
+                    @csrf
+                    <button>Submit</button>
+                </form>
+            @endif
+
+            @if ($permit->status === 'submitted')
+                <form action="/permits/{{ $permit->id }}/validate" method="POST" style="display:inline;">
+                    @csrf
+                    <button>Validate</button>
+                </form>
+            @endif
+
+            @if ($permit->status === 'validated')
+                <form action="/permits/{{ $permit->id }}/print" method="POST" style="display:inline;">
+                    @csrf
+                    <button>Print</button>
+                </form>
+            @endif
         </td>
     </tr>
     @endforeach
